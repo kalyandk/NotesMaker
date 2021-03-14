@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import moment from 'moment'
-import { InputAdornment, makeStyles, Paper, TableBody, TableCell, TableRow, Toolbar, Tooltip } from '@material-ui/core';
+import { Card, InputAdornment, makeStyles, Paper, TableBody, TableCell, TableRow, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -150,42 +150,45 @@ const Notes = () => {
             }}
           />
         </Toolbar>
-        <TblContainer>
-          <TblHead/>
-          <TableBody>
-            {
-              recordsAfterPagingAndSorting().map(item => (
-                <Tooltip key={item.id} title='Click to view'>
-                   <TableRow name='record' onClick={(e) => handleViewRecord(e, item)}>
-                    <TableCell>{item.title}</TableCell>
-                    <TableCell>{item.notes.length > 100 ? item.notes.substr(0, 50)+'....CLICK TO VIEW MORE' : item.notes}</TableCell>
-                    <TableCell>{moment(item.dateCreated).format('MMM DD, YYYY')}</TableCell>
-                    <TableCell>
-                      {/* Update */}
-                      <Controls.ActionButton color='primary' onClick={() => {openInPopup(item)}}>
-                        <EditOutlinedIcon fontSize='small'/>
-                      </Controls.ActionButton>
-                      {/* Delete */}
-                      <Controls.ActionButton
-                        color='secondary'
-                        onClick={() => {
-                          setConfirmDialog({
-                            isOpen: true,
-                            title: 'Are you sure to delete this record',
-                            subTitle: "You can't undo this operation",
-                            onConfirm: () => onDelete(item.id)
-                          })
-                        }}
-                      >
-                        <CloseIcon fontSize='small'/>
-                      </Controls.ActionButton>
-                    </TableCell>
-                  </TableRow>
-                </Tooltip>
-              ))
-            }
-          </TableBody>
-        </TblContainer>
+        {records.length == 0
+          ? <Typography variant='h4' color='primary' align='center'>Click on Add New to create notes.</Typography>
+          : <TblContainer>
+            <TblHead />
+            <TableBody>
+              {
+                recordsAfterPagingAndSorting().map(item => (
+                  <Tooltip key={item.id} title='Click to view'>
+                    <TableRow name='record' onClick={(e) => handleViewRecord(e, item)}>
+                      <TableCell>{item.title}</TableCell>
+                      <TableCell>{item.notes.length > 100 ? item.notes.substr(0, 50) + '....CLICK TO VIEW MORE' : item.notes}</TableCell>
+                      <TableCell>{moment(item.dateCreated).format('MMM DD, YYYY')}</TableCell>
+                      <TableCell>
+                        {/* Update */}
+                        <Controls.ActionButton color='primary' onClick={() => { openInPopup(item) }}>
+                          <EditOutlinedIcon fontSize='small' />
+                        </Controls.ActionButton>
+                        {/* Delete */}
+                        <Controls.ActionButton
+                          color='secondary'
+                          onClick={() => {
+                            setConfirmDialog({
+                              isOpen: true,
+                              title: 'Are you sure to delete this record',
+                              subTitle: "You can't undo this operation",
+                              onConfirm: () => onDelete(item.id)
+                            })
+                          }}
+                        >
+                          <CloseIcon fontSize='small' />
+                        </Controls.ActionButton>
+                      </TableCell>
+                    </TableRow>
+                  </Tooltip>
+                ))
+              }
+            </TableBody>
+          </TblContainer>
+        }
         <TblPagination />
         <Popup title='Notes' openPopup={openPopup} setOpenPopup={setOpenPopup}>
           <NotesForm recordForEdit={recordForEdit} addOrEdit={addOrEdit}/>
