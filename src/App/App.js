@@ -2,6 +2,7 @@ import './App.css';
 import { createMuiTheme, CssBaseline, makeStyles, ThemeProvider } from '@material-ui/core'
 import Header from '../components/Header';
 import Notes from '../pages/Notes/Notes';
+import React from 'react';
 
 // Overriding the material-ui's theme
 const theme = createMuiTheme({
@@ -36,12 +37,12 @@ const useStyles = makeStyles({
 
 function App() {
   const classes = useStyles()
-
+ 
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.appMain}>
-          <Header />        
-          <Notes /> 
+        <Header />
+        <Notes /> 
       </div>
       <CssBaseline /> {/* includes some  common css rules that set a common ground for development that helps build good design */}
     </ThemeProvider>

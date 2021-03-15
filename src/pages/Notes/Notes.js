@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment'
-import { Card, InputAdornment, makeStyles, Paper, TableBody, TableCell, TableRow, Toolbar, Tooltip, Typography } from '@material-ui/core';
+import { InputAdornment, makeStyles, Paper, TableBody, TableCell, TableRow, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import CloseIcon from '@material-ui/icons/Close';
+import FilterListIcon from '@material-ui/icons/FilterList';
 
 import notesIcon from '../../assets/notes.png';
 import Controls from '../../components/controls/Controls'
@@ -16,6 +17,7 @@ import Popup from '../../components/Popup'
 import Notification from '../../components/Notification'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import ViewRecord from '../../components/ViewRecord'
+import Filter from '../../components/Filter'
 
 const useStyles = makeStyles(theme => ({
   pageContent: {
@@ -33,6 +35,10 @@ const useStyles = makeStyles(theme => ({
   newButton: {
       position: 'absolute',
       right: '0px'
+  },
+  filterButton: {
+    position: 'absolute',
+    right: '150px'
   },
   notesIcon: {
     width: '70px',
@@ -54,9 +60,23 @@ const Notes = () => {
   const [recordForEdit, setRecordForEdit] = useState(null)
   const [filterFn, setFilterFn] = useState({ fn: items => items })
   const [openPopup, setOpenPopup] = useState(false)
+  const [openFilter, setOpenFilter] = useState(false)
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subtitle: ''})
-  const [viewRecord, setViewRecord] = useState({ isOpen: false, title: '', notes: ''})
+  const [viewRecord, setViewRecord] = useState({ isOpen: false, title: '', notes: '' })
+  const [disabled, setDisabled] = useState(false)
+  const [state, setState] = useState([{
+    startDate: '',
+    endDate: '',
+    key: 'selection'
+  }]);
+
+  useEffect(() => {
+    if (records.length === 0)
+      setDisabled(true)
+    else
+      setDisabled(false)
+  }, [records])
 
   const {
     TblHead,
@@ -120,6 +140,7 @@ const Notes = () => {
     }
   }
 
+
   return (
     <>
       <PageHeader
@@ -147,6 +168,16 @@ const Notes = () => {
             onClick={() => {
               setOpenPopup(true)
               setRecordForEdit(null)
+            }}
+          />
+           <Controls.Button
+            text='Filter'
+            variant='outlined'
+            startIcon={<FilterListIcon />}
+            className={classes.filterButton}
+            disabled={disabled}
+            onClick={() => {
+              setOpenFilter(true)
             }}
           />
         </Toolbar>
@@ -191,7 +222,10 @@ const Notes = () => {
         }
         <TblPagination />
         <Popup title='Notes' openPopup={openPopup} setOpenPopup={setOpenPopup}>
-          <NotesForm recordForEdit={recordForEdit} addOrEdit={addOrEdit}/>
+          <NotesForm recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
+        </Popup>
+        <Popup title='Filter' subTitle='Select date range and click submit' openPopup={openFilter} setOpenPopup={setOpenFilter}>
+          <Filter filterFn={filterFn} setFilterFn={setFilterFn} setOpenFilter={setOpenFilter} state={state} setState={setState} />
         </Popup>
       </Paper>
       <Notification notify={notify} setNotify={setNotify} />

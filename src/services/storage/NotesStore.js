@@ -36,6 +36,8 @@ export function deleteNotes(id) {
   let notes = getAllNotes()
   notes = notes.filter(x => x.id != id)
   storage.setItem(KEYS.notes, notes)
+  let curId = storage.getItem(KEYS.notesID)
+  storage.setItem(KEYS.notesID, curId-1)
 }
 
 // helper [generates id for each record]
@@ -53,12 +55,3 @@ export function getAllNotes() {
     storage.setItem(KEYS.notes, [])
   return storage.getItem(KEYS.notes)
 }
-
-// console.log('46',getAllNotes());
-// insertNotes({title: 'title1'})
-// insertNotes({title: 'title1'})
-// insertNotes({title: 'title1'})
-// console.log(48, getAllNotes());
-// console.log(store);
-
-

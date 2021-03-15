@@ -17,14 +17,18 @@ const useStyles = makeStyles(theme => ({
 
 const Popup = (props) => {
   
-  const { title, children, openPopup, setOpenPopup } = props
+  const { title, subTitle, children, openPopup, setOpenPopup } = props
   const classes = useStyles()
 
   return (
     <Dialog open={openPopup} maxWidth='md' classes={{paper: classes.dialogWrapper}}>
       <DialogTitle className={classes.dialogTitle}>
-        <div style={{display: 'flex'}}>
-          <Typography variant='h6' component='div' style={{flexGrow: 1}}>{title}</Typography>
+        <div style={{ display: 'flex' }}>
+          <div  style={{flexGrow: 1}}>
+          <Typography variant='h6' component='div'>{title}</Typography>
+          <Typography variant='subtitle2' component='div'>{subTitle}</Typography>
+          </div>
+          
           <Controls.ActionButton
             color='secondary'
             onClick={() => {
